@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>iOS Calculator</title>
+
+  <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+  <link rel="stylesheet" href="style.css">
+  <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+  </head>
+
+  <body>
+    <div class = "container">
+      <div class = "result">
+        <span id = "result_display">0</span>
+      </div>
+
+      <div class = "buttons">
+        <button py-click = "operation_distribution('clear_all')" class = "item item1 AC" id = "clear">AC</button>
+        <button py-click = "operation_distribution('sign_change')" class = "item item1 sign" id = "change sign">+/-</button>
+        <button py-click = "operation_distribution('percent')" class = "item item1 percent">%</button>
+        <button py-click = "operation_distribution('sign', 'division')" class = "item item2 divide">/</button>
+        <button py-click = "operation_distribution('numbers', '7')" class = "item item3 seven">7</button>
+        <button py-click = "operation_distribution('numbers', '8')" class = "item item3 eight">8</button>
+        <button py-click = "operation_distribution('numbers', '9')" class = "item item3 nine">9</button>
+        <button py-click = "operation_distribution('sign', 'multiplication')" class = "item item2 multiply">x</button>
+        <button py-click = "operation_distribution('numbers', '6')" class = "item item3 six">6</button>
+        <button py-click = "operation_distribution('numbers', '5')" class = "item item3 five">5</button>
+        <button py-click = "operation_distribution('numbers', '4')" class = "item item3 four">4</button>
+        <button py-click = "operation_distribution('sign', 'subtraction')" class = "item item2 subtract">-</button>
+        <button py-click = "operation_distribution('numbers', '3')" class = "item item3 three">3</button>
+        <button py-click = "operation_distribution('numbers', '2')" class = "item item3 two">2</button>
+        <button py-click = "operation_distribution('numbers', '1')" class = "item item3 one">1</button>
+        <button py-click = "operation_distribution('sign', 'addition')" class = "item item2 add">+</button>
+      </div>
+      <div class = "buttom_buttons">
+        <button py-click = "operation_distribution('numbers', '0')" class = "a item3 zero">0</button>
+        <button py-click = "operation_distribution('numbers', '.')" class = "a item3 decimal">.</button>
+        <button py-click = "operation_distribution('equals')" class = "a item2 equal">=</button>
+      </div>
+    </div>
+
+    <py-script>
+      def operation_distribution(input, number_and_operation = "a"):
+        new_sign = "none"
+        try:
+            with open("value.txt", "r") as values:
+                imp_info =[]
+                for ele in values:
+                    imp_info.append(ele[0:-1])
+                if imp_info == []:
+                    imp_info = ["0", "none", "0_not_inputted"]
+                else:
+                    for lines in values.read():
+                        imp_info.append(lines[0:-1])
+        except:
+            with open("value.txt", "w") as values:
+                imp_info = ["0", "none", "0_not_inputted"]
+        if input == "clear_all":
+            imp_info = ["0", "none", "0_not_inputted"]
+            Element("result_display").element.innerText = "0"
+        elif input == "sign_change":
+            if imp_info[1] == "none":
+                imp_info[0] = str(float(imp_info[0]) * -1)
+                if float(imp_info[0]) == int(imp_info[0][0:imp_info[0].index(".")]):
+                    imp_info[0] = str(int(imp_info[0][0:imp_info[0].index(".")]))
+                Element("result_display").element.innerText = imp_info[0]
+            elif imp_info[1] != "none":
+                try:
+                    imp_info[2] = str(float(imp_info[2]) * -1)
+                    if float(imp_info[2]) == int(imp_info[2][0:imp_info[2].index(".")]):
+                        imp_info[2] = str(int(imp_info[2][0:imp_info[2].index(".")]))
+                    Element("result_display").element.innerText = imp_info[2]
+                except:
+                    pass
+        elif input == "percent":
+            if imp_info[1] == "none":
+                imp_info[0] = str(float(imp_info[0]) * 100)
+                Element("result_display").element.innerText = imp_info[0]
+            elif imp_info[1] != "none":
+                try:
+                    imp_info[2] = str(float(imp_info[2]) * 100)
+                    Element("result_display").element.innerText = imp_info[2]
+                except:
+                    pass
+        elif input == "sign":
+            if imp_info[2] != "0_not_inputted":
+                input = "equals"
+                new = True
+                new_sign = number_and_operation
+            elif imp_info[2] == "0_not_inputted":
+                imp_info[1] = number_and_operation
+        elif input == "numbers":
+            if imp_info[1] == "none":
+                if imp_info[0] == "0":
+                    if number_and_operation == ".":
+                        imp_info[0] = "0."
+                    else:
+                        imp_info[0] = number_and_operation
+                elif imp_info[0] != "0":
+                    if len(imp_info[0]) > 5:
+                        pass
+                    elif number_and_operation == "." and not("." in imp_info[0]):
+                        imp_info[0] += str(number_and_operation)
+                    elif number_and_operation != ".":
+                        imp_info[0] += str(number_and_operation)
+                    elif number_and_operation == "." and "." in imp_info[0]:
+                        pass
+                Element("result_display").element.innerText = imp_info[0]
+            else:
+                if imp_info[2] == "0_not_inputted":
+                    if number_and_operation == ".":
+                        imp_info[2] = "0."
+                    else:
+                        imp_info[2] = number_and_operation
+                elif imp_info[2] != "0_not_inputted":
+                    if len(imp_info[2]) > 5:
+                        pass
+                    elif number_and_operation == "." and not("." in imp_info[2]):
+                        imp_info[2] += str(number_and_operation)
+                    elif number_and_operation != ".":
+                        imp_info[2] += str(number_and_operation)
+                    elif number_and_operation == "." and "." in imp_info[2]:
+                        pass
+                Element("result_display").element.innerText = imp_info[2]
+        if input == "equals":
+            divide_by_0 = False
+            if ("0_not_inputted" in imp_info) or (imp_info[1] == "none"):
+                result = float(imp_info[0])
+                new_sign = imp_info[1]
+            elif imp_info[1] == "addition":
+                result = float(imp_info[0]) + float(imp_info[2])
+            elif imp_info[1] == "subtraction":
+                result = float(imp_info[0]) - float(imp_info[2])
+            elif imp_info[1] == "multiplication":
+                result = float(imp_info[0]) * float(imp_info[2])
+            elif imp_info[1] == "division":
+                try:
+                    result = float(imp_info[0]) / float(imp_info[2])
+                except:
+                    divide_by_0 = True
+            elif imp_info[1] == "none":
+                result = float(imp_info[0])
+
+            if divide_by_0 == False:
+                if result == int(result):
+                    result = int(result)
+                text = result
+            elif divide_by_0 == True:
+                text = "Error"
+                result = 0
+            if len(str(result)) > 6:
+                a = '%E' % result
+                if int(a[3]) >= 5:
+                    if int(a[2]) == 9:
+                        b = str(int(a[0]) + 1) + ".0E" + a.split('E')[1]
+                    else:
+                        b = a[0:1] + "." + str(int(a[2]) + 1) + "E" + a.split('E')[1]
+                else:
+                    b = a[0:3] + 'E' + a.split('E')[1]
+                c = '%E' % float(b)
+                result = c.split('E')[0][0:3] + 'E' + c.split('E')[1]
+                text = result
+            Element("result_display").element.innerText = str(text)
+            imp_info[0] = str(result)
+            imp_info[1] = str(new_sign)
+            imp_info[2] = "0_not_inputted"
+            a = open("value.txt", "w")
+            a.close()
+            with open("value.txt", "a") as values:
+                for content in imp_info:
+                    values.write(content + "\n")
+        a = open("value.txt", "w")
+        a.close()
+        with open("value.txt", "a") as values:
+            for content in imp_info:
+                values.write(content + "\n")
+        
+    </py-script>
+    <!--
+        
+                -->
+    <!---
+    <py-script>
+      def write_to_page():
+        manual_div = Element("manual-write")
+        manual_div.element.innerText = "Hello World"
+    </py-script>
+  -->
+  </body>
+</html>
